@@ -1,5 +1,6 @@
 import { createContext, FunctionComponent, useState } from "react";
 import { GlobalContextState, Lang, LogginUser } from "./global.state";
+import { initAxios } from "../services/axios.service";
 
 interface GlobalContextProviderProps {
   children: JSX.Element;
@@ -29,6 +30,7 @@ export const GlobalContextProvider: FunctionComponent<
           setUser: (_: LogginUser) => setUser(_),
           setToken: (_: string) => {
             localStorage.setItem("token", _);
+            initAxios();
             setToken(_);
           },
           clearToken: () => {

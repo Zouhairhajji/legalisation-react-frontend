@@ -5,7 +5,7 @@ import "./login.style.css";
 import Webcam from "react-webcam";
 import { useAuthentication } from "../../hooks/authentication.hook";
 import { ROUTES } from "../../constants/root.constant";
-import { handleAxiosError } from "../../services/axios.service";
+import { handleAxiosError, initAxios } from "../../services/axios.service";
 import { API_LOGIN } from "../../constants/api.constant";
 import { FormattedMessage } from "react-intl";
 
@@ -14,7 +14,7 @@ export const LoginComponent: FunctionComponent = () => {
   const webCamRef = useRef<Webcam>(null);
   const passwordRef = createRef<HTMLInputElement>();
   const usernameRef = createRef<HTMLInputElement>();
-  const { setToken } = useAuthentication();
+  const { setToken, fetchUser } = useAuthentication();
 
   const loginHandler = () => {
     const camera = webCamRef.current;
@@ -31,7 +31,9 @@ export const LoginComponent: FunctionComponent = () => {
       .post(API_LOGIN, loginRequest)
       .then((res) => {
         setToken(res.data.token);
-        navigate(ROUTES.DASHBOARD);
+        fetchUser()
+          .then((res) => navigate(ROUTES.DASHBOARD))
+          .catch(handleAxiosError);
       })
       .catch(handleAxiosError);
   };
